@@ -19,7 +19,7 @@
 
 ```r
 install.packages("remotes")
-remotes::install_github("USERNAME/factorDFA")
+remotes::install_github("astrageek/factorDFA")
 library(factorDFA)
 ```
 
