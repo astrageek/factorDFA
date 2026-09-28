@@ -1,0 +1,68 @@
+---
+title: "Детерминированный факторный анализ в R"
+subtitle: "Методические указания к пакету factorDFA"
+author: "К. Астраханцев"
+date: "2026"
+date-format: "YYYY"
+lang: ru
+toc: true
+toc-depth: 2
+toc-title: "Содержание"
+number-sections: true
+crossref:
+  tbl-title: "Таблица"
+  fig-title: "Рисунок"
+format:
+  typst:
+    papersize: a4
+    margin:
+      x: 2.2cm
+      y: 2.2cm
+    mainfont: "PT Serif"
+    fontsize: 11pt
+    section-numbering: "1.1."
+    fig-format: png
+    fig-width: 6.5
+    fig-height: 3.6
+    output-file: factorDFA_metodichka.pdf
+knitr:
+  opts_chunk:
+    dev: png
+    dev.args: {type: quartz}
+    dpi: 200
+    comment: ""
+    collapse: false
+execute:
+  echo: true
+  warning: false
+---
+
+```{r}
+#| include: false
+library(factorDFA)
+options(width = 95)
+f2 <- function(x) formatC(x, format = "f", digits = 2, big.mark = "\u00a0")
+fm <- function(x) prettyNum(round(x, 2), big.mark = "\\ ")
+```
+
+{{< include _01_intro.qmd >}}
+
+{{< include _02_start.qmd >}}
+
+{{< include _03_chain.qmd >}}
+
+{{< include _04_abs.qmd >}}
+
+{{< include _05_rel.qmd >}}
+
+{{< include _06_index.qmd >}}
+
+{{< include _07_integral.qmd >}}
+
+{{< include _08_compare.qmd >}}
+
+{{< include _09_tasks.qmd >}}
+
+{{< include _10_answers.qmd >}}
+
+{{< include _11_reference.qmd >}}

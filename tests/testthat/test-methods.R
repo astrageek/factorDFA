@@ -89,3 +89,10 @@ test_that("печать и график работают", {
   on.exit(grDevices::dev.off())
   expect_silent(plot(r))
 })
+
+test_that("формулы индексного метода содержат индексы периодов", {
+  r <- index_method(R ~ q * p,
+                    data.frame(q = c(100, 50), p = c(20, 40)),
+                    data.frame(q = c(110, 45), p = c(22, 44)))
+  expect_equal(r$details$indices$formula[1], "(Σq1 × p0) / (Σq0 × p0)")
+})

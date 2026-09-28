@@ -1,0 +1,71 @@
+# Ответы к задачам
+
+```{r}
+#| include: false
+answer <- function(res) {
+  lhs <- res$model$lhs
+  e <- res$effects
+  parts <- paste0("за счёт $", e$factor, "$: ", f2(e$effect))
+  paste0("$", lhs, "_0 = ", fm(res$y0), "$, $", lhs, "_1 = ", fm(res$y1),
+         "$, $\\Delta ", lhs, " = ", fm(res$delta), "$; ",
+         paste(parts, collapse = "; "), ".")
+}
+solve <- function(t) dfa(t$model, t$x0, t$x1, method = t$method)
+r <- lapply(tasks, solve)
+r9  <- index_method(R ~ q * p, t9_0, t9_1)
+r10 <- index_method("ФЗП = ЧР * СЗ", t10_0, t10_1)
+r14 <- dfa_compare(P ~ Q * (p - s), t14_0, t14_1)
+idx <- function(res) paste(
+  paste0("$I_{", res$details$indices$factor, "} = ",
+         sprintf("%.4f", res$details$indices$index), "$"), collapse = ", ")
+```
+
+Все ответы рассчитаны пакетом `factorDFA`. Влияние факторов округлено до
+сотых; при ручном счёте возможны расхождения в последнем знаке.
+
+**Задача 1.** `r answer(r$t1)`
+
+**Задача 2.** `r answer(r$t2)`
+
+**Задача 3.** `r answer(r$t3)` Фондоотдача выражена в рублях продукции
+на 1 рубль основных фондов.
+
+**Задача 4.** `r answer(r$t4)`
+
+**Задача 5.** `r answer(r$t5)` Рост расходов уменьшает прибыль, поэтому
+их влияние отрицательно.
+
+**Задача 6.** `r answer(r$t6)`
+
+**Задача 7.** `r answer(r$t7)` Относительные отклонения:
+`r paste0("$\\Delta\\%", r$t7$details$changes$factor, " = ", fm(r$t7$details$changes$change_pct), "$", collapse = ", ")`.
+
+**Задача 8.** `r answer(r$t8)` Фактические значения: $N_1 = `r tasks$t8$x1[["N"]]`$,
+$W_1 = `r tasks$t8$x1[["W"]]`$.
+
+**Задача 9.** `r answer(r9)` Индексы: `r idx(r9)`; индекс выручки
+$I_R = `r sprintf("%.4f", r9$details$total_index)`$.
+
+**Задача 10.** `r answer(r10)` Индексы: `r idx(r10)`; общий индекс
+$I_{ФЗП} = `r sprintf("%.4f", r10$details$total_index)`$.
+
+**Задача 11.** `r answer(r$t11)` По методу цепных подстановок:
+`r paste0("$", r$t1$effects$factor, "$: ", f2(r$t1$effects$effect), collapse = ", ")`.
+Различие вызвано распределением неразложимого остатка
+$\Delta ЧР \cdot \Delta ГВ = `r fm(prod(tasks$t1$x1 - tasks$t1$x0))`$: цепные
+подстановки относят его к последнему фактору, интегральный метод делит
+поровну.
+
+**Задача 12.** `r answer(r$t12)`
+
+**Задача 13.** `r answer(r$t13)`
+
+**Задача 14.**
+
+```{r}
+#| echo: false
+r14
+```
+
+Методы относительных разниц и индексный не применимы, потому что модель
+содержит вычитание: это смешанная, а не мультипликативная модель.

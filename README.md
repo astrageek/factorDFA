@@ -15,6 +15,11 @@
 Единая функция `dfa(..., method = "chain" | "abs" | "rel" | "index" | "integral")`
 и `dfa_compare()` — все подходящие методы в одной таблице.
 
+## Методичка
+
+Подробное руководство с теорией, разобранными примерами и задачами с ответами:
+[factorDFA_metodichka.pdf](metodichka/factorDFA_metodichka.pdf).
+
 ## Установка
 
 ```r

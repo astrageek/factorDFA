@@ -181,7 +181,7 @@ index_method <- function(model, base, actual = NULL, order = NULL) {
   idx <- y[-1L] / y[-length(y)]
   sigma <- if (nrow(d$base) > 1L) "Σ" else ""
   texts <- vapply(0:length(order), function(i) {
-    paste0(sigma, .sub_text(m$expr, order[seq_len(i)], order[-seq_len(i)]))
+    paste0(sigma, .sub_text(m$expr, order[seq_len(i)], order[seq_along(order) > i]))
   }, character(1))
   num <- texts[-1L]
   den <- texts[-length(texts)]
