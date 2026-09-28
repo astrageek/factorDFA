@@ -5,7 +5,8 @@
 #' @inheritParams chain_substitution
 #' @param method Метод: `"chain"` — цепные подстановки, `"abs"` — абсолютные
 #'   разницы, `"rel"` — относительные разницы, `"index"` — индексный,
-#'   `"integral"` — интегральный.
+#'   `"integral"` — интегральный, `"log"` — логарифмический,
+#'   `"shapley"` — метод Шепли.
 #' @return Объект класса `dfa`.
 #' @seealso [dfa_compare()] — все методы сразу.
 #' @export
@@ -13,7 +14,7 @@
 #' dfa(V ~ N * W, base = c(N = 100, W = 10), actual = c(N = 120, W = 12),
 #'     method = "integral")
 dfa <- function(model, base, actual = NULL,
-                method = c("chain", "abs", "rel", "index", "integral"),
+                method = c("chain", "abs", "rel", "index", "integral", "log", "shapley"),
                 order = NULL) {
   method <- match.arg(method)
   fn <- switch(method,
@@ -21,7 +22,9 @@ dfa <- function(model, base, actual = NULL,
     abs = abs_diff,
     rel = rel_diff,
     index = index_method,
-    integral = integral_method
+    integral = integral_method,
+    log = log_method,
+    shapley = shapley_method
   )
   fn(model, base, actual, order = order)
 }
@@ -40,7 +43,7 @@ dfa <- function(model, base, actual = NULL,
 #' @examples
 #' dfa_compare(V ~ N * W, base = c(N = 100, W = 10), actual = c(N = 120, W = 12))
 dfa_compare <- function(model, base, actual = NULL, order = NULL,
-                        methods = c("chain", "abs", "rel", "index", "integral")) {
+                        methods = c("chain", "abs", "rel", "index", "integral", "log", "shapley")) {
   m <- .parse_model(model)
   order <- .resolve_order(m, order)
   tab <- data.frame(factor = c(order, "Итого"), stringsAsFactors = FALSE)

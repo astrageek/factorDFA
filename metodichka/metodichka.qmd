@@ -59,6 +59,8 @@ fm <- function(x) prettyNum(round(x, 2), big.mark = "\\ ")
 
 {{< include _07_integral.qmd >}}
 
+{{< include _07b_log_shapley.qmd >}}
+
 {{< include _08_compare.qmd >}}
 
 {{< include _09_tasks.qmd >}}

@@ -1,11 +1,11 @@
 Package: factorDFA
 Type: Package
 Title: Deterministic Factor Analysis for Economic Indicators
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Kirill", "Astrakhantsev", email = "astrakhantsev05@icloud.com", role = c("aut", "cre"))
 Description: Deterministic factor analysis (DFA) of economic indicators for
     students: chain substitution, absolute differences, relative differences,
-    index and integral methods. Supports multiplicative, additive, ratio and
+    index, integral, logarithmic and Shapley methods. Supports multiplicative, additive, ratio and
     mixed models, several input formats, comparison of methods and waterfall
     plots. Output and documentation are in Russian.
 License: MIT + file LICENSE

@@ -9,7 +9,9 @@
 | `rel_diff(model, base, actual, order)` | относительные разницы |
 | `index_method(model, base, actual, order)` | индексный метод |
 | `integral_method(model, base, actual)` | интегральный метод |
-| `dfa(model, base, actual, method = "...")` | метод по названию: `chain`, `abs`, `rel`, `index`, `integral` |
+| `log_method(model, base, actual)` | логарифмический метод |
+| `shapley_method(model, base, actual)` | метод Шепли |
+| `dfa(model, base, actual, method = "...")` | метод по названию: `chain`, `abs`, `rel`, `index`, `integral`, `log`, `shapley` |
 | `dfa_compare(model, base, actual)` | все подходящие методы |
 | `print(res, digits = 2, details = TRUE)` | печать с нужной точностью |
 | `plot(res)` | каскадная диаграмма |

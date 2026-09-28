@@ -8,7 +8,7 @@ dfa(
   model,
   base,
   actual = NULL,
-  method = c("chain", "abs", "rel", "index", "integral"),
+  method = c("chain", "abs", "rel", "index", "integral", "log", "shapley"),
   order = NULL
 )
 }
@@ -26,7 +26,8 @@ dfa(
 
 \item{method}{Метод: \code{"chain"} — цепные подстановки, \code{"abs"} — абсолютные
 разницы, \code{"rel"} — относительные разницы, \code{"index"} — индексный,
-\code{"integral"} — интегральный.}
+\code{"integral"} — интегральный, \code{"log"} — логарифмический,
+\code{"shapley"} — метод Шепли.}
 
 \item{order}{Порядок подстановки факторов. По умолчанию — порядок
 появления в модели. Обычно сначала количественные факторы, потом

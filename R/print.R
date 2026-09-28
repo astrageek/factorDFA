@@ -13,7 +13,7 @@ print.dfa <- function(x, digits = 2, details = TRUE, ...) {
   if (x$n_items > 1L) {
     cat("Объектов: ", x$n_items, " (показатель суммируется)\n", sep = "")
   }
-  if (x$method != "integral") {
+  if (!x$method %in% c("integral", "log", "shapley")) {
     cat("Порядок подстановки: ", paste(x$order, collapse = " → "), "\n", sep = "")
   }
   cat(lhs, "0 = ", .fmt(x$y0, digits), ";  ", lhs, "1 = ", .fmt(x$y1, digits), "\n", sep = "")
@@ -73,6 +73,18 @@ print.dfa <- function(x, digits = 2, details = TRUE, ...) {
     print(tbl, row.names = FALSE, right = FALSE)
     cat("Общий индекс I(", x$model$lhs, ") = ", formatC(d$total_index, format = "f", digits = 4),
         " = произведение факторных индексов\n", sep = "")
+  } else if (x$method == "log") {
+    tbl <- d$indices
+    tbl$index <- formatC(tbl$index, format = "f", digits = 4)
+    tbl$log_index <- formatC(tbl$log_index, format = "f", digits = 6)
+    names(tbl) <- c("Фактор", "Индекс", "ln индекса")
+    cat("\nФакторные индексы (каждый фактор меняется отдельно от базы):\n")
+    print(tbl, row.names = FALSE, right = FALSE)
+    cat("Общий индекс I(", x$model$lhs, ") = ", formatC(d$total_index, format = "f", digits = 4),
+        "; изменение распределено пропорционально логарифмам индексов\n", sep = "")
+  } else if (x$method == "shapley") {
+    cat("\nВлияние усреднено по всем ", d$n_orders,
+        " порядкам подстановки; результат не зависит от порядка факторов.\n", sep = "")
   } else if (x$method == "integral") {
     cat("\nНеразложимый остаток распределён между факторами; результат не зависит",
         "от порядка факторов.\n")

@@ -282,3 +282,88 @@ integral_method <- function(model, base, actual = NULL, order = NULL, n_nodes = 
   }
   out
 }
+
+#' Логарифмический метод
+#'
+#' Общее изменение показателя распределяется пропорционально логарифмам
+#' факторных индексов: \eqn{\Delta y_x = \Delta y \cdot \ln I_x / \ln I_y}.
+#' Результат не зависит от порядка факторов. Применяется к
+#' мультипликативным и кратным моделям (`a * b * c`, `a / b`) для одного
+#' объекта с положительными значениями факторов.
+#'
+#' @inheritParams integral_method
+#' @return Объект класса `dfa`.
+#' @export
+#' @examples
+#' log_method(W ~ V / N, base = c(V = 48000, N = 120), actual = c(V = 54600, N = 130))
+log_method <- function(model, base, actual = NULL, order = NULL) {
+  m <- .parse_model(model)
+  .check_structure(m, c("*", "/", "("), "логарифмический",
+                   "Метод работает для мультипликативных и кратных моделей (a * b, a / b).")
+  order <- .resolve_order(m, order)
+  d <- .parse_data(base, actual, m$vars)
+  if (nrow(d$base) > 1L) {
+    stop("Логарифмический метод применяется к одному объекту. ",
+         "Для нескольких объектов используйте index_method() или shapley_method().", call. = FALSE)
+  }
+  vals <- unlist(c(d$base, d$actual))
+  if (any(vals <= 0)) {
+    stop("Логарифмический метод требует положительных значений всех факторов.", call. = FALSE)
+  }
+  y0 <- .total(m, d$base)
+  y1 <- .total(m, d$actual)
+  w <- vapply(m$vars, function(v) {
+    p <- d$base
+    p[[v]] <- d$actual[[v]]
+    log(.total(m, p) / y0)
+  }, numeric(1))
+  ly <- log(y1 / y0)
+  effects <- if (abs(ly) < 1e-12) y0 * w else (y1 - y0) * w / ly
+  idx <- data.frame(factor = m$vars, index = exp(w), log_index = w, stringsAsFactors = FALSE)
+  .new_dfa("log", m, d, order, effects,
+           details = list(indices = idx, total_index = y1 / y0),
+           formulas = stats::setNames(paste0("Δ", m$lhs, " × ln I(", m$vars, ") / ln I(", m$lhs, ")"),
+                                      m$vars))
+}
+
+#' Метод Шепли
+#'
+#' Влияние фактора равно среднему его влиянию по методу цепных подстановок
+#' при всех возможных порядках подстановки. Результат не зависит от порядка
+#' факторов. Подходит для моделей любого вида, в том числе с несколькими
+#' объектами. Вычисление требует \eqn{2^n} расчётов модели, поэтому число
+#' факторов ограничено 12.
+#'
+#' @inheritParams integral_method
+#' @return Объект класса `dfa`.
+#' @export
+#' @examples
+#' shapley_method(P ~ Q * (p - s),
+#'                base   = c(Q = 5000, p = 120, s = 90),
+#'                actual = c(Q = 5400, p = 125, s = 97))
+shapley_method <- function(model, base, actual = NULL, order = NULL) {
+  m <- .parse_model(model)
+  order <- .resolve_order(m, order)
+  d <- .parse_data(base, actual, m$vars)
+  n <- length(m$vars)
+  if (n > 12L) stop("Метод Шепли поддерживает не более 12 факторов.", call. = FALSE)
+  masks <- 0:(2^n - 1)
+  in_set <- function(mask, j) bitwAnd(mask, 2^(j - 1)) > 0
+  value <- vapply(masks, function(mask) {
+    p <- d$base
+    for (j in seq_len(n)) if (in_set(mask, j)) p[[m$vars[j]]] <- d$actual[[m$vars[j]]]
+    .total(m, p)
+  }, numeric(1))
+  size <- vapply(masks, function(mask) sum(vapply(seq_len(n), function(j) in_set(mask, j), logical(1))),
+                 numeric(1))
+  effects <- stats::setNames(numeric(n), m$vars)
+  for (j in seq_len(n)) {
+    without <- masks[!in_set(masks, j)]
+    s <- size[without + 1]
+    weight <- factorial(s) * factorial(n - s - 1) / factorial(n)
+    effects[j] <- sum(weight * (value[without + 2^(j - 1) + 1] - value[without + 1]))
+  }
+  .new_dfa("shapley", m, d, order, effects,
+           details = list(n_orders = factorial(n)),
+           formulas = stats::setNames(rep(paste0("среднее по ", factorial(n), " порядкам"), n), m$vars))
+}

@@ -9,7 +9,7 @@ dfa_compare(
   base,
   actual = NULL,
   order = NULL,
-  methods = c("chain", "abs", "rel", "index", "integral")
+  methods = c("chain", "abs", "rel", "index", "integral", "log", "shapley")
 )
 }
 \arguments{
