@@ -63,8 +63,4 @@ fm <- function(x) prettyNum(round(x, 2), big.mark = "\\ ")
 
 {{< include _08_compare.qmd >}}
 
-{{< include _09_tasks.qmd >}}
-
-{{< include _10_answers.qmd >}}
-
 {{< include _11_reference.qmd >}}
